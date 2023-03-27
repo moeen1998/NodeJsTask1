@@ -1,0 +1,17 @@
+<html>
+	<head>
+        <title>Register</title>
+    </head>
+	<body>
+		<h1>Hello world!</h1>
+        <% if (msg) { %>
+			<h1 >This Email : <span style="color: red;"><%= msg %></span> Is Alredy Token</h1>
+		<% } %>
+		<form method="POST" action="/register">
+			name: <input type="text" id="Name" name="Name" /><br />
+			Email: <input type="email" id="Email" name="Email" /><br />
+			Password: <input type="password" id="Password" name="Password" /><br />
+			<input type="submit" value="Submit" />
+		</form>
+	</body>
+</html>

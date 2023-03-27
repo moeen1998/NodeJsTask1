@@ -1,0 +1,13 @@
+<html>
+	<head>
+		<title>Profile</title>
+		<link href="/assets/style.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+		<% if (logged) { %>
+			<h1 style="color: greenyellow;">Wlcome Mr: <%= UserName %></h1>
+		<% }else{ %>
+			<h1><a href="/login">Login</a> First</h1>
+		<% } %>
+	</body>
+</html>
