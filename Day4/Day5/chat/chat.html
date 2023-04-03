@@ -1,0 +1,83 @@
+<html>
+
+<head>
+  <title>Chat</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <div id="textara"></div>
+  <div id="clients">
+    <input type="radio" id="all" name="user" value="all">
+    <label for="all">All</label><br>
+  </div>
+
+  <input type="text" id="chat"></br>
+  <button type="submit" onClick="sendMessage()">send message</button>
+
+
+  <script type="text/javascript">
+    // emit event called connect
+    var socket = io.connect('localhost:3000')
+    var name;
+
+    //not work ????????????????????????
+    window.onbeforeunload = function(){
+      socket.emit('remove', name);
+    }    
+    //when connect ask user for name and send the name to the server 
+    socket.on('connected', function () {
+      nickname = prompt('what is your nick name')
+      name = nickname;
+      socket.emit('join', nickname)
+    })
+
+    //ask server to send list of connected users
+    socket.on('getOldUsers', function (name) {
+      for(let i=0;i<name.length;i++){
+        document.getElementById('clients').innerHTML += `<input type="radio" id=${name[i]} name="user" value=${name[i]}> <label for=${name[i]}>${name[i]}</label><br>`;
+      }
+    })
+
+    //listen to new users 
+    socket.on('addnewuser', function (name) {
+      document.getElementById('clients').innerHTML += `<input type="radio" id=${name} name="user" value=${name}> <label for=${name}>${name}</label><br>`;
+    })
+
+    /////////////////////////////////////////////////////////////
+    
+    socket.on('removeuser', function (name) {
+      console.log("removing user");
+      var clients = document.getElementsByName("user");
+      for(let i =0;i<clients.length;i++){
+        if(clients[i].value == name){
+          clients.splice(i,1);
+        }
+      }
+    })
+
+    /////////////////////////////////////////////////////////////
+
+    // lsiten for comming new messages 
+    socket.on('reciveMessages', function (msg,fromUser,toUser) {
+      if (name == toUser || toUser === 'all')
+        document.getElementById('textara').innerHTML += "<br>" + msg
+    });
+
+    //sending new message to the server
+    function sendMessage() {
+      var clients = document.getElementsByName("user");
+      for(let i=0; i<clients.length; i++){
+        if(clients[i].checked){
+          var to = clients[i].value;
+          var from = name;
+          var msg = document.getElementById('chat').value
+          socket.emit('sendmessage', msg,from,to);
+          break;
+        }
+      }
+    }
+    
+  </script>
+  <body>
+</html>
